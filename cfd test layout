@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>CFD Exam Practice – Full 300 MCQ</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; max-width: 900px; }
+.question { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+.options label { display: block; margin-left: 10px; cursor: pointer; }
+.correct { color: green; font-weight: bold; }
+.incorrect { color: red; font-weight: bold; }
+h1 { margin-bottom: 5px; }
+.small { font-size: 0.9em; color: #555; }
+</style>
+</head>
+<body>
+<h1>CFD Exam Practice – Full MCQ Bank</h1>
+<p class="small">
+Blocks covered: 10A (FVM); 10B (Interpolation & Discretisation); 10C (p–v coupling & CFL);
+11 (Energy / Heat Transfer); 12A (Turbulence Overview); 12B (Turbulence Modelling).
+</p>
+<div id="quiz"></div>
+
+<script>
+// 300 questions total: 50 per block (10A,10B,10C,11,12A,12B)
+const questions = [
+  // ===================== 10A – Finite Volume Method (50) =====================
+  {q:"10A Q1: The finite volume method (FVM) starts from the ______ form of the conservation equations.",opts:["Integral","Differential","Algebraic","Spectral"],ans:0},
+  {q:"10A Q2: In FVM, conservation is enforced over:",opts:["Individual fluid particles","Each control volume","Only the whole domain","Only at boundaries"],ans:1},
+  {q:"10A Q3: The divergence (Gauss) theorem is used in FVM to convert:",opts:["Surface integrals to line integrals","Volume integrals of divergence to surface flux integrals","Time integrals to space integrals","Point values to averages"],ans:1},
+  {q:"10A Q4: In a cell-centred FVM, primary variables (u,v,w,p,T, etc.) are stored at:",opts:["Vertices","Face centres","Cell centres","Boundary nodes only"],ans:2},
+  {q:"10A Q5: Face values of a variable in FVM are usually obtained by:",opts:["Direct measurement","Analytical integration","Interpolation from cell-centre values","Ignoring them"],ans:2},
+  {q:"10A Q6: The general conservative transport equation has which basic structure?",opts:["Source = diffusion","Transient + convection = diffusion + source","Pressure = density × temperature","Velocity = constant"],ans:1},
+  {q:"10A Q7: A key reason FVM is inherently conservative is that:",opts:["It uses central differencing","Flux leaving one cell equals flux entering the neighbour","It uses explicit time stepping","It ignores diffusion"],ans:1},
+  {q:"10A Q8: A standard source of numerical error in the FVM formulation is:",opts:["Round-off only","Assuming flux is uniform over each face","Using physical units","Imposing boundary conditions"],ans:1},
+  {q:"10A Q9: Another major numerical error in FVM comes from:",opts:["Exact integration of source term","Interpolation of face values","Using small time steps","Using double precision"],ans:1},
+  {q:"10A Q10: Mesh refinement generally has what effect on truncation error?",opts:["Increases it","Decreases it","Leaves it unchanged","Makes it random"],ans:1},
+  {q:"10A Q11: In the generic discrete equation a_P φ_P = Σ a_N φ_N + b, a_P is:",opts:["Source term","Neighbour coefficient","Central (diagonal) coefficient","Diffusion coefficient only"],ans:2},
+  {q:"10A Q12: In the same equation, Σ a_N φ_N represents:",opts:["Neighbour contributions via convection/diffusion","Only source terms","Only pressure correction","Only time derivative"],ans:0},
+  {q:"10A Q13: The mass flux through face f is:",opts:["ρ A_f","ρ v_f · n_f A_f","p_f A_f","μ_f A_f"],ans:1},
+  {q:"10A Q14: The diffusive flux of scalar φ through a face is proportional to:",opts:["φ itself","Gradient of φ normal to the face","Pressure gradient","Velocity magnitude"],ans:1},
+  {q:"10A Q15: FVM matrices produced after discretisation are typically:",opts:["Dense","Sparse","Full and dense","Purely diagonal"],ans:1},
+  {q:"10A Q16: The convective term in the momentum equation is nonlinear because it contains:",opts:["Time derivatives only","Products of velocity components","Density only","Pressure only"],ans:1},
+  {q:"10A Q17: In FVM, the time-derivative term integrated over a CV becomes:",opts:["A surface flux","An algebraic term involving old and new values","A pressure correction","A turbulence source"],ans:1},
+  {q:"10A Q18: The number of algebraic equations generated equals:",opts:["Number of faces","Number of control volumes","Number of nodes","Number of boundaries"],ans:1},
+  {q:"10A Q19: The main structural difference between FVM and finite difference method is that FVM:",opts:["Uses higher order derivatives","Is conservative by construction","Cannot handle diffusion","Requires uniform grids"],ans:1},
+  {q:"10A Q20: The control volume in FVM is defined by:",opts:["A point in space only","A finite region of space bounded by faces","A streamline","A pathline"],ans:1},
+  {q:"10A Q21: Global conservation of a scalar is guaranteed if:",opts:["Face fluxes are random","Face flux leaving one cell = negative of flux entering neighbour","Time step = 0","Source terms are neglected"],ans:1},
+  {q:"10A Q22: FVM can naturally handle:",opts:["Only structured rectangular meshes","Only 1D problems","Complex unstructured meshes","Only Cartesian grids"],ans:2},
+  {q:"10A Q23: The source term Sφ in the transport equation usually appears on which side of the discrete equation?",opts:["Left-hand side coefficients","Right-hand side (b term)","Time derivative only","Boundary only"],ans:1},
+  {q:"10A Q24: Interpolation for face values is needed because:",opts:["Face values are unknown, cell-centre values are stored","We know exact gradients","We use spectral methods","We have infinite resolution"],ans:0},
+  {q:"10A Q25: FVM naturally works in:",opts:["Physical space (x,y,z) with control volumes","Fourier space","Only Lagrangian coordinates","Only cylindrical coordinates"],ans:0},
+  {q:"10A Q26: The P-cell in FVM usually refers to:",opts:["Face point","Control-volume centroid","Boundary node","Ghost cell"],ans:1},
+  {q:"10A Q27: The neighbour cells to P are usually labelled as:",opts:["R,S,T","N,E,W,S","N,E,W,S,T etc.","Only N and S"],ans:2},
+  {q:"10A Q28: The two main approximations in basic FVM are:",opts:["Uniform face flux and face value interpolation","Linear pressure and constant density","Analytical integrals and exact gradients","Ignoring diffusion and sources"],ans:0},
+  {q:"10A Q29: Local conservation means:",opts:["Only domain-averaged conservation holds","Each CV individually satisfies a balance","Only inlet/outlet balances hold","Conservation is applied only at walls"],ans:1},
+  {q:"10A Q30: Convection terms are associated with which physical process?",opts:["Transport due to bulk motion","Molecular mixing","Radiation","Chemical reaction"],ans:0},
+  {q:"10A Q31: Diffusion terms are associated with:",opts:["Bulk advection","Molecular transport and gradients","Boundary conditions","Time integration"],ans:1},
+  {q:"10A Q32: If the mesh is strongly refined everywhere, the FVM solution tends towards:",opts:["The exact integral solution","A random field","A non-physical solution","Zero everywhere"],ans:0},
+  {q:"10A Q33: In a conservative form, the flux through a face is taken as:",opts:["Exact analytical integral over face","Piecewise constant approximation across the face","Zero unless specified","Only diffusive"],ans:1},
+  {q:"10A Q34: Nonlinear systems from FVM are usually solved by:",opts:["Single direct matrix inversion","Iterative methods with linearisation","Graphical methods","Fourier transforms only"],ans:1},
+  {q:"10A Q35: Boundary conditions in FVM enter primarily through:",opts:["Modifying source terms only","Modifying face fluxes or face values","Changing viscosity","Changing density globally"],ans:1},
+  {q:"10A Q36: For steady problems, the time-derivative term:",opts:["Is zero","Is always large","Dominates diffusion","Is replaced by source"],ans:0},
+  {q:"10A Q37: FVM guarantees exact conservation of:",opts:["Mass only","Momentum only","Any quantity written in conservative form","Energy only"],ans:2},
+  {q:"10A Q38: The discrete convective flux at a face involves:",opts:["Only diffusion coefficient","Mass flux times transported variable","Only pressure gradient","Only heat source"],ans:1},
+  {q:"10A Q39: The notion of ‘flux leaving one CV equals flux entering neighbour’ is tied to:",opts:["Symmetry boundary conditions","Conservative discretisation","Explicit time integration","Central differencing"],ans:1},
+  {q:"10A Q40: Refining the mesh only in regions with large gradients is called:",opts:["Uniform refinement","Selective refinement","Adaptive or local refinement","Random refinement"],ans:2},
+  {q:"10A Q41: The CV faces have associated:",opts:["Only area","Area and outward normal vectors","Only length","Only volume"],ans:1},
+  {q:"10A Q42: The face normal direction is defined:",opts:["Randomly","By code convention for each cell","Always outward from domain","Always inward to domain"],ans:1},
+  {q:"10A Q43: The integrated source term over a CV is approximated as:",opts:["Sφ at the face times area","Sφ at cell centre times volume","Zero by default","Uniform along boundary"],ans:1},
+  {q:"10A Q44: For pure diffusion problems, the dominant flux term is:",opts:["Convective flux","Diffusive flux","Source term","Pressure work"],ans:1},
+  {q:"10A Q45: The discretised FVM equations must be solved:",opts:["Independently per equation, no coupling","As a coupled algebraic system","Only for pressure","Only for energy"],ans:1},
+  {q:"10A Q46: FVM is favoured for industrial CFD mainly because:",opts:["It is trivial to implement","It handles complex geometry and conserves well","It never needs mesh generation","It solves analytically"],ans:1},
+  {q:"10A Q47: The discrete continuity equation in FVM enforces:",opts:["Mass conservation in each CV","Momentum conservation","Energy conservation","Vorticity conservation"],ans:0},
+  {q:"10A Q48: Non-orthogonality and skewness of cells primarily affect:",opts:["Interpolation accuracy and gradients","Boundary conditions","Time stepping","Equation of state"],ans:0},
+  {q:"10A Q49: The FVM approach is naturally formulated in:",opts:["Lagrangian frame","Eulerian frame","Particle-tracking frame","Frequency domain"],ans:1},
+  {q:"10A Q50: The key idea of FVM can be summed up as:",opts:["Solve PDEs at a point","Enforce flux balances over small control volumes","Integrate only along streamlines","Use Fourier modes only"],ans:1},
+
+  // ===================== 10B – Interpolation & Discretisation (50) =====================
+  {q:"10B Q1: In a cell-centred scheme, interpolation is used to estimate:",opts:["Cell-centre values","Face values from cell-centre values","Boundary types","Time steps"],ans:1},
+  {q:"10B Q2: The simplest and most numerically diffusive convective scheme is:",opts:["First-order upwind","Second-order upwind","Central differencing","QUICK"],ans:0},
+  {q:"10B Q3: First-order upwind chooses the face value based on:",opts:["Averaging upstream and downstream","Direction of mass flux (upstream value)","Downstream gradient","Random sampling"],ans:1},
+  {q:"10B Q4: The main disadvantage of first-order upwind is:",opts:["Instability","Excessive numerical diffusion (smearing)","Non-conservation","Inability to handle diffusion"],ans:1},
+  {q:"10B Q5: Central differencing uses which face value approximation?",opts:["Upstream only","Downstream only","Average of neighbour cell centres","Boundary value"],ans:2},
+  {q:"10B Q6: Central differencing is typically:",opts:["First-order accurate in space","Second-order accurate in space","Third-order accurate","Zeroth-order"],ans:1},
+  {q:"10B Q7: Central differencing in convection-dominated flows tends to cause:",opts:["Strong damping","Spurious oscillations","No error","Exact solutions"],ans:1},
+  {q:"10B Q8: Second-order upwind improves on first-order upwind by including:",opts:["Time derivative in interpolation","Gradient at the upstream cell","Only downstream value","Random noise"],ans:1},
+  {q:"10B Q9: Higher-order schemes without limiters can:",opts:["Remain always bounded","Produce overshoots/undershoots near steep gradients","Eliminate diffusion","Remove the need for BCs"],ans:1},
+  {q:"10B Q10: The QUICK scheme is formally:",opts:["First-order accurate","Second-order accurate","Third-order accurate on uniform grids","Zeroth-order"],ans:2},
+  {q:"10B Q11: QUICK uses a quadratic fit through:",opts:["One cell only","Two upstream nodes and one downstream node","Two downstream nodes and one upstream node","Three randomly chosen nodes"],ans:1},
+  {q:"10B Q12: A known drawback of QUICK is:",opts:["Excessive diffusion","Spurious oscillations if not limited","Non-conservation","Need for structured grids only"],ans:1},
+  {q:"10B Q13: The power-law scheme is based on the exact solution of the 1D steady:",opts:["Wave equation","Convection–diffusion equation","Diffusion-only equation","Poisson equation"],ans:1},
+  {q:"10B Q14: For large cell Peclet numbers, the power-law scheme reduces effectively to:",opts:["Central differencing","First-order upwind","Second-order upwind","QUICK"],ans:1},
+  {q:"10B Q15: False diffusion refers to:",opts:["Physical turbulent diffusion","Numerical diffusion due to mesh–flow misalignment","Radiative diffusion","Viscous dissipation"],ans:1},
+  {q:"10B Q16: False diffusion is particularly strong when:",opts:["Flow aligned with grid","Flow at strong angle to grid and coarse mesh","No convection","No diffusion"],ans:1},
+  {q:"10B Q17: A bounded scheme is one that:",opts:["Always converges","Ensures solution remains within local extrema bounds","Ignores BCs","Removes diffusion"],ans:1},
+  {q:"10B Q18: TVD (Total Variation Diminishing) schemes aim to:",opts:["Increase oscillations","Reduce boundedness","Combine higher-order accuracy with monotonicity","Remove convection"],ans:2},
+  {q:"10B Q19: A consistent scheme is one where:",opts:["Truncation error → 0 as Δx → 0","Residuals are constant","Matrix is symmetric","Boundary conditions are uniform"],ans:0},
+  {q:"10B Q20: Order of accuracy describes:",opts:["How fast residuals decay with iterations","How truncation error scales with grid spacing","How stable the scheme is","How dense the matrix is"],ans:1},
+  {q:"10B Q21: First-order schemes have truncation error proportional to:",opts:["Δx","(Δx)^2","(Δx)^3","1/Δx"],ans:0},
+  {q:"10B Q22: Second-order schemes have truncation error proportional to:",opts:["Δx","(Δx)^2","(Δx)^3","1/Δx"],ans:1},
+  {q:"10B Q23: Using higher-order schemes generally:",opts:["Increases accuracy but may reduce robustness","Reduces accuracy","Eliminates need for mesh quality","Guarantees convergence"],ans:0},
+  {q:"10B Q24: False diffusion can be reduced by:",opts:["Making grid coarser","Aligning grid with main flow direction","Ignoring convection","Using only first-order schemes"],ans:1},
+  {q:"10B Q25: The desirable properties of a discretisation scheme are:",opts:["Conservation only","Stability only","Conservation, boundedness, stability","Only high order"],ans:2},
+  {q:"10B Q26: Green–Gauss cell-based gradient calculation uses:",opts:["Cell-centre values and face areas","Only node values","Only boundary values","Only time derivatives"],ans:0},
+  {q:"10B Q27: Least-squares gradient methods build a gradient by:",opts:["Fitting a plane to neighbour values in a least-squares sense","Using central differencing only","Using pressure corrections","Random sampling"],ans:0},
+  {q:"10B Q28: Non-orthogonal meshes mainly affect:",opts:["Time derivatives","Accuracy of gradient reconstruction","Boundary conditions","Material properties"],ans:1},
+  {q:"10B Q29: A skew cell is one where:",opts:["Face centre lies on line between centroids","Face centre is offset from centroid-to-centroid line","Cell volume is zero","Cell is perfectly orthogonal"],ans:1},
+  {q:"10B Q30: Higher skewness typically:",opts:["Improves accuracy","Worsens accuracy and can hurt convergence","Has no effect","Makes scheme exact"],ans:1},
+  {q:"10B Q31: The discrete equation coefficients a_P and a_N are assembled to form:",opts:["A dense matrix","A sparse coefficient matrix","No matrix at all","A diagonal-only system"],ans:1},
+  {q:"10B Q32: Under-relaxation modifies which part of the discrete update?",opts:["Right-hand side only","New solution update step","Mesh geometry","Boundary condition types"],ans:1},
+  {q:"10B Q33: Using too aggressive (large) under-relaxation factors (>1) usually:",opts:["Stabilises solution","Causes divergence/instability","Is harmless","Improves robustness"],ans:1},
+  {q:"10B Q34: Interpolation schemes for convection should be chosen based on:",opts:["Only CPU time","Flow regime and mesh quality","Only memory usage","Only turbulence model"],ans:1},
+  {q:"10B Q35: In diffusion-only problems, central differencing is:",opts:["Unstable","Exact for linear profiles","Overdamped","Forbidden"],ans:1},
+  {q:"10B Q36: Discretisation error is defined as:",opts:["Difference between numerical and exact solution of PDE on a given grid","Difference caused by finite precision","Difference due to too few iterations","Difference due to turbulence modelling"],ans:0},
+  {q:"10B Q37: Iteration (linearisation) error refers to:",opts:["Error after infinite iterations","Error because system not fully converged","Only round-off error","Mesh error"],ans:1},
+  {q:"10B Q38: Round-off error arises from:",opts:["Discretisation","Finite precision arithmetic in computers","Bad BCs","Turbulence modelling"],ans:1},
+  {q:"10B Q39: Model error refers to:",opts:["Numerical truncation","Inadequate physical modelling or assumptions","Mesh alignment","Time step"],ans:1},
+  {q:"10B Q40: As grid is refined, which error necessarily decreases?",opts:["Round-off","Iteration","Discretisation (if scheme is consistent)","Model"],ans:2},
+  {q:"10B Q41: Residual for a CV equation is:",opts:["Left-hand side minus right-hand side for that CV","Difference between BCs","Difference between two schemes","Difference in time steps"],ans:0},
+  {q:"10B Q42: Normalised residual is often defined as:",opts:["Residual divided by initial residual or some scale","Residual squared","Residual × volume","Residual / time step"],ans:0},
+  {q:"10B Q43: Low residuals guarantee:",opts:["Mathematically correct solution","Consistency with the discrete equations","Physically correct solution always","Mesh independence"],ans:1},
+  {q:"10B Q44: In addition to residuals, convergence should be checked by monitoring:",opts:["CPU temperature","Key integral quantities (e.g. lift, drag, mass flow)","Only time step","Only mesh size"],ans:1},
+  {q:"10B Q45: A scheme is stable if errors:",opts:["Grow unbounded","Remain or decrease with iterations","Always disappear instantaneously","Are independent of step size"],ans:1},
+  {q:"10B Q46: Second-order schemes on bad meshes may:",opts:["Always work better","Be less robust than first-order schemes","Never converge","Eliminate diffusion"],ans:1},
+  {q:"10B Q47: Blended schemes combine:",opts:["Random schemes","Low-order and high-order schemes with blending parameters","Only diffusion and convection","Only explicit and implicit"],ans:1},
+  {q:"10B Q48: MUSCL-type schemes are used to:",opts:["Lower order","Increase spatial order and control oscillations","Switch to laminar flow","Remove time dependence"],ans:1},
+  {q:"10B Q49: A key numerical design goal is to balance:",opts:["Only speed and memory","Accuracy, stability, robustness, and cost","Only accuracy and order","Only stability"],ans:1},
+  {q:"10B Q50: False diffusion is not a physical effect but a:",opts:["Measurement error","Numerical artefact of discretisation and mesh orientation","Boundary condition error","Turbulence model artefact"],ans:1},
+
+  // ===================== 10C – p–v coupling & Courant/CFL (50) =====================
+  {q:"10C Q1: In incompressible flow, pressure acts mainly to:",opts:["Set density via EOS","Enforce continuity (mass conservation) as a Lagrange multiplier","Set temperature","Set viscosity"],ans:1},
+  {q:"10C Q2: The continuity equation in incompressible flow cannot be directly solved for:",opts:["Velocity","Pressure","Density","Temperature"],ans:1},
+  {q:"10C Q3: In a segregated solver, the momentum equations are first solved to obtain:",opts:["Final pressure field","Provisional velocity field","Final temperature field","Final turbulence field"],ans:1},
+  {q:"10C Q4: The provisional velocity field from momentum equations generally:",opts:["Already satisfies continuity","Violates continuity and must be corrected","Has zero divergence","Needs no pressure"],ans:1},
+  {q:"10C Q5: Substituting the discrete momentum equation into continuity yields:",opts:["An energy equation","A Poisson-type equation for pressure (or pressure correction)","An equation for density","A vorticity equation"],ans:1},
+  {q:"10C Q6: SIMPLE stands for:",opts:["Semi-Implicit Method for Pressure-Linked Equations","Simple Incompressible Method for Pressure","Single-Implicit Momentum Pressure Law Equation","Semi-Isotropic Method of Poisson Linear Equation"],ans:0},
+  {q:"10C Q7: In SIMPLE, the first step is usually:",opts:["Solve pressure directly","Solve momentum to get an intermediate velocity field","Solve energy equation","Solve turbulence equations"],ans:1},
+  {q:"10C Q8: The pressure correction equation is derived from:",opts:["Energy equation","Momentum plus continuity","Equation of state","Turbulence model"],ans:1},
+  {q:"10C Q9: After solving the pressure correction equation, we:",opts:["Ignore velocity","Correct pressure and velocity fields","Change mesh","Remove diffusion"],ans:1},
+  {q:"10C Q10: SIMPLE usually requires:",opts:["No iterations","Many outer iterations to converge p and v","Only one step","Only time integration"],ans:1},
+  {q:"10C Q11: PISO differs from SIMPLE primarily by:",opts:["Hard-coding pressure","Doing multiple pressure corrections per time step","Ignoring momentum","Being steady only"],ans:1},
+  {q:"10C Q12: PISO is best suited for:",opts:["Steady flows","Unsteady incompressible flows with small time steps","Inviscid compressible flows only","Pure conduction"],ans:1},
+  {q:"10C Q13: PIMPLE is:",opts:["A DNS code","A hybrid of SIMPLE and PISO for unsteady or difficult flows","A radiation model","A mesh generator"],ans:1},
+  {q:"10C Q14: Under-relaxation factors less than 1 are used to:",opts:["Destabilise solution","Damp corrections to enhance stability","Eliminate discretisation error","Refine mesh"],ans:1},
+  {q:"10C Q15: Too strong under-relaxation (too small factors) will:",opts:["Speed convergence","Slow convergence but stabilise","Cause immediate divergence","Remove model error"],ans:1},
+  {q:"10C Q16: The Courant number in 1D is defined as:",opts:["Co = u Δx / Δt","Co = u Δt / Δx","Co = ν / α","Co = p / ρ"],ans:1},
+  {q:"10C Q17: Physically, the Courant number represents:",opts:["Viscosity ratio","Fraction of a cell that fluid travels in one time step","Density ratio","Pressure ratio"],ans:1},
+  {q:"10C Q18: For explicit schemes, a Courant number greater than about 1:",opts:["Is always required","Can lead to instability","Guarantees stability","Has no effect"],ans:1},
+  {q:"10C Q19: For implicit schemes, Courant numbers greater than 1:",opts:["Are impossible","Can often be stable but may affect accuracy","Guarantee exact solution","Eliminate diffusion"],ans:1},
+  {q:"10C Q20: Given u = 2 m/s, Δx = 0.01 m, Δt = 0.002 s, the Courant number is:",opts:["0.1","0.2","0.4","1.0"],ans:2},
+  {q:"10C Q21: In practical CFD codes, the Courant number is often computed:",opts:["Per cell using face fluxes and cell volume","Globally only","Only at boundaries","Only at inlets"],ans:0},
+  {q:"10C Q22: Stable explicit time integration typically requires:",opts:["Co << 1","Co ≈ 10","Co ≈ 100","No limit"],ans:0},
+  {q:"10C Q23: Adaptive time stepping based on Courant number will:",opts:["Increase Δt if Co is too high","Decrease Δt if Co is too high and increase if Co is too low","Keep Δt fixed","Ignore Co"],ans:1},
+  {q:"10C Q24: The CFL condition is primarily a:",opts:["Consistency condition","Stability condition","Accuracy condition","Boundary condition"],ans:1},
+  {q:"10C Q25: In a steady-state SIMPLE-based solver, the Courant number:",opts:["Is irrelevant because pseudo-time is used","Still influences under-relaxation stability","Determines density","Determines pressure directly"],ans:1},
+  {q:"10C Q26: Matrix decomposition of momentum equation M u = b into A u = H involves:",opts:["Splitting diagonal and off-diagonals","Splitting time and space","Splitting turbulent and laminar","Splitting real and imaginary"],ans:0},
+  {q:"10C Q27: The diagonal matrix A is used to:",opts:["Eliminate pressure","Relate local velocity to local contributions only","Change mesh","Scale energy"],ans:1},
+  {q:"10C Q28: The term H in the decomposition physically represents:",opts:["Source term only","Neighbour influence and explicit terms","Time derivative only","Boundary conditions"],ans:1},
+  {q:"10C Q29: Substituting u = H/A − (1/A)∇p into continuity gives:",opts:["An energy equation","A pressure Poisson or correction equation","A turbulence equation","A density equation"],ans:1},
+  {q:"10C Q30: SIMPLEC modifies SIMPLE mainly to:",opts:["Slow convergence","Accelerate convergence by changing velocity correction","Remove pressure correction","Remove continuity"],ans:1},
+  {q:"10C Q31: SIMPLER stands for SIMPLE Revised and:",opts:["Avoids solving pressure","Improves pressure-velocity coupling by solving pressure earlier","Removes diffusion","Uses DNS"],ans:1},
+  {q:"10C Q32: In incompressible flows, density is usually treated as:",opts:["Constant (except buoyancy terms)","Strongly variable with pressure","Zero","Infinite"],ans:0},
+  {q:"10C Q33: For buoyant flows with Boussinesq approximation, density variation is kept only:",opts:["In energy equation","In turbulence model","In buoyancy term of momentum equation","Nowhere"],ans:2},
+  {q:"10C Q34: Pressure boundary conditions at inlets/outlets are usually:",opts:["Static pressure specified at one boundary only","Static pressure specified at both inlet and outlet for all incompressible flows","Never specified","Random"],ans:0},
+  {q:"10C Q35: Specifying static pressure at both inlet and outlet of a domain in incompressible flow:",opts:["Is always correct","Can over-constrain the problem","Is required by SIMPLE","Is harmless"],ans:1},
+  {q:"10C Q36: In a segregated solver, different equations (u,v,w,p,T, etc.) are:",opts:["Solved in a coupled monolithic system","Solved sequentially with coupling through source/coefficients","Solved completely independently","Never solved"],ans:1},
+  {q:"10C Q37: The residuals of continuity and momentum:",opts:["Are unrelated","Should all drop as solution converges","Only continuity residuals matter","Only momentum matters"],ans:1},
+  {q:"10C Q38: A very high Courant number in an implicit solver often leads to:",opts:["Fast and accurate solution","Fast but potentially inaccurate or unstable solution","Always divergence","Always exact solution"],ans:1},
+  {q:"10C Q39: PISO’s multiple pressure corrections within a single time step help:",opts:["Only mesh quality","To better enforce continuity at each time step","To remove diffusion","To remove convection"],ans:1},
+  {q:"10C Q40: For steady problems solved with pseudo-time, reducing under-relaxation factors is similar to:",opts:["Reducing pseudo-time step","Increasing explicit time step","Increasing Courant number","Changing density"],ans:0},
+  {q:"10C Q41: Pressure–velocity coupling schemes must satisfy:",opts:["Only energy equation","Continuity and momentum simultaneously","Only continuity","Only momentum"],ans:1},
+  {q:"10C Q42: A segregated solver with poor p–v coupling often shows:",opts:["Fast clean convergence","Oscillating or non-converging continuity residuals","Only energy residual issues","Perfect stability"],ans:1},
+  {q:"10C Q43: Rhie–Chow interpolation is used mainly to:",opts:["Handle turbulence","Prevent pressure–velocity decoupling on collocated grids","Improve radiation","Handle compressibility"],ans:1},
+  {q:"10C Q44: Pressure correction p′ is typically:",opts:["Added to old pressure to get new pressure","Subtracted from density","Ignored","Used only at boundaries"],ans:0},
+  {q:"10C Q45: Velocity correction u′ is constructed so that corrected velocity field:",opts:["Still violates continuity","Satisfies continuity more closely","Is independent of pressure","Removes diffusion"],ans:1},
+  {q:"10C Q46: The CFL condition originally came from studying:",opts:["Steady diffusion equations","Hyperbolic PDEs with explicit time marching","Elliptic PDEs","Integral equations"],ans:1},
+  {q:"10C Q47: In practice, maximum Courant number reported in CFD is used to:",opts:["Tune time step","Tune turbulence model","Tune density","Tune EOS"],ans:0},
+  {q:"10C Q48: For problems with very different velocities in the same mesh, local Courant numbers:",opts:["Are uniform","Vary from cell to cell","Do not exist","Are all zero"],ans:1},
+  {q:"10C Q49: Excessively small time steps with implicit schemes:",opts:["Always improve accuracy","Can give diminishing returns for steady solutions","Always harm stability","Remove diffusion"],ans:1},
+  {q:"10C Q50: Pressure–velocity coupling and Courant number together control:",opts:["BC types and grid generation","How quickly and stably flow field approaches a continuity-satisfying solution","Only turbulence","Only energy"],ans:1},
+
+  // ===================== 11 – Energy / Heat Transfer (50) =====================
+  {q:"11 Q1: The energy equation in CFD is derived from:",opts:["Second law of thermodynamics","First law of thermodynamics applied to a control volume","Continuity equation","Momentum equation"],ans:1},
+  {q:"11 Q2: The commonly solved form in CFD for heat transfer is the:",opts:["Total energy equation only","Internal energy equation only","Enthalpy form of the energy equation","Kinetic energy equation"],ans:2},
+  {q:"11 Q3: In enthalpy form, the general conservation equation is:",opts:["∂(ρh)/∂t + ∇·(ρvh) = ∇·(k∇T) + S_h","∂p/∂t = 0","∂T/∂t = 0","∇·(ρv) = 0"],ans:0},
+  {q:"11 Q4: The term ∇·(k∇T) represents:",opts:["Convective heat transfer","Thermal conduction (diffusion)","Radiation","Viscous dissipation"],ans:1},
+  {q:"11 Q5: The term ∇·(ρvh) represents:",opts:["Convective transport of enthalpy","Diffusive transport of enthalpy","Radiation","Chemical reaction"],ans:0},
+  {q:"11 Q6: In a solid (no motion), the convective term:",opts:["Is non-zero","Is zero because v = 0","Becomes source term","Becomes diffusive term"],ans:1},
+  {q:"11 Q7: Fourier’s law of heat conduction gives heat flux q = −k∇T, so k is:",opts:["Viscosity","Thermal conductivity","Density","Specific heat"],ans:1},
+  {q:"11 Q8: The Brinkman number compares:",opts:["Radiation and conduction","Viscous dissipation to conduction","Convection and diffusion","Heat and mass transfer"],ans:1},
+  {q:"11 Q9: Viscous dissipation is usually important when:",opts:["Velocities and viscosity are high","Flow is very slow","Flow is laminar and cold","Temperature is uniform"],ans:0},
+  {q:"11 Q10: For most low-speed liquid flows, viscous dissipation is:",opts:["Dominant","Negligible","Always zero","Mandatory to include"],ans:1},
+  {q:"11 Q11: A Dirichlet thermal boundary condition specifies:",opts:["Heat flux","Temperature","Thermal conductivity","Radiation"],ans:1},
+  {q:"11 Q12: A Neumann thermal boundary condition specifies:",opts:["Temperature","Normal heat flux (−k∂T/∂n)","Reynolds number","Prandtl number"],ans:1},
+  {q:"11 Q13: A convective boundary (Robin) condition is of the form:",opts:["T = constant","−k∂T/∂n = h(T∞ − T_s)","q = 0","k = constant"],ans:1},
+  {q:"11 Q14: At a fluid–solid interface in conjugate heat transfer, temperature:",opts:["Is discontinuous","Is continuous across the interface","Is zero","Is undefined"],ans:1},
+  {q:"11 Q15: At a fluid–solid interface, heat flux normal to the interface:",opts:["Is discontinuous","Is continuous (k_f∂T_f/∂n = k_s∂T_s/∂n)","Is always zero","Is random"],ans:1},
+  {q:"11 Q16: The Peclet number for heat transfer compares:",opts:["Convection and diffusion of heat","Radiation and conduction","Viscosity and density","Momentum and vorticity"],ans:0},
+  {q:"11 Q17: High Peclet number implies:",opts:["Conduction dominates","Convection dominates","Radiation dominates","No heat transfer"],ans:1},
+  {q:"11 Q18: The Prandtl number Pr = ν/α compares:",opts:["Momentum and heat diffusion","Pressure and density","Energy and mass","Density and viscosity"],ans:0},
+  {q:"11 Q19: Very large Prandtl number fluids (e.g. oils) have:",opts:["Thermal boundary layer much thicker than velocity boundary layer","Thermal boundary layer much thinner than velocity boundary layer","No thermal layer","No velocity layer"],ans:1},
+  {q:"11 Q20: Radiation boundary conditions involve:",opts:["Linear T dependence","T^4 dependence (Stefan–Boltzmann law)","No temperature","Only conduction"],ans:1},
+  {q:"11 Q21: The general heat source S_h can include:",opts:["Volumetric Joule heating","Chemical reaction heat release","Nuclear heating","All of these"],ans:3},
+  {q:"11 Q22: Internal energy u and enthalpy h are related by:",opts:["h = u + p/ρ","h = u − p/ρ","h = ρu","h = u/p"],ans:0},
+  {q:"11 Q23: For an ideal gas with constant c_p, changes in enthalpy are proportional to:",opts:["Pressure change","Temperature change","Density change","Volume change"],ans:1},
+  {q:"11 Q24: For solids, which energy form is often solved?",opts:["Conduction-only form (no convection)","Convection-only form","Total energy","Kinetic energy"],ans:0},
+  {q:"11 Q25: Buoyancy in natural convection is usually modelled via:",opts:["Constant density","Boussinesq approximation","Ideal gas EOS only","Ignoring gravity"],ans:1},
+  {q:"11 Q26: The Boussinesq approximation assumes density variations are small and only appear:",opts:["Nowhere","In buoyancy term ρgβ(T − T_ref)","In continuity strongly","In viscosity"],ans:1},
+  {q:"11 Q27: In natural convection, the energy equation is strongly coupled with which momentum component?",opts:["Vertical component (due to gravity)","Streamwise only","Spanwise only","None"],ans:0},
+  {q:"11 Q28: Conjugate heat transfer simulations solve:",opts:["Fluid only","Solid only","Fluid and solid regions with coupled interfaces","Only radiation"],ans:2},
+  {q:"11 Q29: A temperature jump at a fluid–solid interface in a steady conjugate simulation usually indicates:",opts:["Correct physics","Violation of temperature continuity","Good convergence","Only large Prandtl number"],ans:1},
+  {q:"11 Q30: In CFD, local Nusselt number can be interpreted as:",opts:["Dimensionless temperature","Dimensionless heat transfer coefficient","Dimensionless velocity","Dimensionless pressure"],ans:1},
+  {q:"11 Q31: High Nusselt number indicates:",opts:["Heat transfer dominated by conduction","Heat transfer dominated by convection","No heat transfer","Pure radiation"],ans:1},
+  {q:"11 Q32: Thermal resistance in convection is inversely proportional to:",opts:["Thermal conductivity","Convective heat transfer coefficient h","Density","Velocity"],ans:1},
+  {q:"11 Q33: In high-Re turbulent flows, thermal boundary layers are:",opts:["Absent","Typically thin near walls, with steep gradients","Very thick","Independent of turbulence"],ans:1},
+  {q:"11 Q34: Turbulent heat transfer is often modelled using:",opts:["Eddy diffusivity analogy","Pure laminar conduction","No turbulence effect","Wall functions only"],ans:0},
+  {q:"11 Q35: Thermal wall functions are used when:",opts:["Mesh resolves all near-wall scales","Mesh cannot resolve thermal sublayer","Flow is laminar","No heat transfer"],ans:1},
+  {q:"11 Q36: The total energy equation must be used in:",opts:["Weakly compressible flows, low Mach","Strongly compressible flows with shocks","Pure conduction","Incompressible isothermal flows"],ans:1},
+  {q:"11 Q37: In low-Mach incompressible flows, pressure work term in energy:",opts:["Dominates","Is usually negligible","Is always zero","Is undefined"],ans:1},
+  {q:"11 Q38: Thermal diffusivity α is defined as:",opts:["k/ρc_p","ν/Pr","μ/ρ","p/ρ"],ans:0},
+  {q:"11 Q39: The coupling between momentum and energy in forced convection is generally:",opts:["Two-way (velocity affects T and vice versa via property variation)","One-way (velocity field affects T, but T hardly affects velocity)","No coupling","Only via density"],ans:1},
+  {q:"11 Q40: In natural convection, coupling between momentum and energy is:",opts:["Weak","Strong via buoyancy","Non-existent","Only in turbulence"],ans:1},
+  {q:"11 Q41: Temperature is usually the solved variable for energy; when enthalpy is solved, T is obtained from:",opts:["EOS and property relations","Momentum equation","Continuity","Poisson equation"],ans:0},
+  {q:"11 Q42: In constant-property fluids, h and T are related by:",opts:["h = c_p T (up to reference)","h = c_v T","h = pT","h = constant"],ans:0},
+  {q:"11 Q43: If viscous dissipation term is retained, it appears as:",opts:["Heat sink","Volumetric heat source depending on velocity gradients","Change in density","Boundary condition"],ans:1},
+  {q:"11 Q44: For pure conduction in a solid at steady state, the governing equation reduces to:",opts:["Laplace/Poisson equation in T","Continuity equation","Navier–Stokes","Energy-less form"],ans:0},
+  {q:"11 Q45: Including radiation in CFD usually requires:",opts:["No extra equations","Radiation model (e.g. DO, P1) coupled with energy","Only change in viscosity","Only change in density"],ans:1},
+  {q:"11 Q46: In strongly temperature-dependent properties, energy and momentum equations are:",opts:["Decoupled","Strongly coupled via property variation","Independent","Only dependent through continuity"],ans:1},
+  {q:"11 Q47: Volumetric heat sources can strongly affect:",opts:["Only momentum","Only continuity","Temperature field and buoyancy","Only turbulence"],ans:2},
+  {q:"11 Q48: In transient conduction problems, time step must respect:",opts:["Only CFL","Diffusive stability conditions for explicit schemes","Only density","Only boundary type"],ans:1},
+  {q:"11 Q49: Post-processing of heat transfer often examines:",opts:["Only velocity profiles","Wall heat flux, Nusselt number, temperature contours","Only pressure","Only turbulence"],ans:1},
+  {q:"11 Q50: The core idea of energy modelling in CFD:",opts:["Ignore heat effects","Solve conservation of energy with appropriate conduction, convection, sources, and coupling","Use only empirical correlations","Use only laminar conduction"],ans:1},
+
+  // ===================== 12A – Turbulence Overview (50) =====================
+  {q:"12A Q1: Turbulent flow is characterised by:",opts:["Steady, laminar behaviour","Irregular, 3D, time-dependent motion with enhanced mixing","One-dimensional laminar profiles","No mixing"],ans:1},
+  {q:"12A Q2: The key dimensionless number governing laminar–turbulent transition is:",opts:["Mach number","Reynolds number","Prandtl number","Nusselt number"],ans:1},
+  {q:"12A Q3: Classical critical Reynolds number for pipe flow transition is:",opts:["Re ≈ 2300","Re ≈ 23","Re ≈ 100","Re ≈ 10^5"],ans:0},
+  {q:"12A Q4: Turbulent kinetic energy k is defined as:",opts:["0.5(U^2 + V^2 + W^2)","0.5(u'^2 + v'^2 + w'^2)","u'v'w'","ρ u'^2"],ans:1},
+  {q:"12A Q5: Reynolds decomposition splits an instantaneous quantity into:",opts:["Mean + fluctuating part","Real + imaginary part","Upstream + downstream part","Laminar + turbulent part"],ans:0},
+  {q:"12A Q6: The Reynolds stress tensor components are:",opts:["μ∂U_i/∂x_j","−ρ u'_i u'_j","ρU_iU_j","pδ_ij"],ans:1},
+  {q:"12A Q7: The RANS equations are obtained by:",opts:["Time differentiation","Reynolds averaging the Navier–Stokes equations","Spatial averaging","Fourier transform"],ans:1},
+  {q:"12A Q8: The closure problem arises because:",opts:["Too few unknowns","Reynolds averaging introduces more unknowns (stresses) than equations","Pressure unknown","Continuity unknown"],ans:1},
+  {q:"12A Q9: Turbulence production is mainly due to:",opts:["Heat sources","Mean velocity gradients (shear)","Gravity alone","Surface tension"],ans:1},
+  {q:"12A Q10: Turbulence dissipation rate ε physically represents:",opts:["Production of k","Rate at which k is converted to internal energy by viscosity","Rate of density change","Rate of pressure change"],ans:1},
+  {q:"12A Q11: The energy cascade describes:",opts:["Energy transfer from small to large eddies","Energy transfer from large to small eddies","No transfer","Only laminar flow"],ans:1},
+  {q:"12A Q12: The Kolmogorov scales correspond to:",opts:["Largest energy-containing eddies","Smallest dissipative eddies","Intermediate scales only","Laminar scales"],ans:1},
+  {q:"12A Q13: As Reynolds number increases, Kolmogorov length scales:",opts:["Increase","Decrease","Stay constant","Vanish"],ans:1},
+  {q:"12A Q14: The inertial subrange of the turbulence spectrum is the region where:",opts:["Energy is produced","Energy is dissipated","Energy cascades with negligible direct production or dissipation","No motion"],ans:2},
+  {q:"12A Q15: Kolmogorov’s −5/3 law refers to:",opts:["Slope of velocity profile","Slope of energy spectrum in the inertial subrange","Temperature gradient","Pressure profile"],ans:1},
+  {q:"12A Q16: Turbulent flows exhibit:",opts:["Low mixing","High levels of momentum and scalar mixing","No diffusion","Isotropic laminar structures only"],ans:1},
+  {q:"12A Q17: Vorticity is defined as:",opts:["∇ · v","∇ × v","v · v","∇p"],ans:1},
+  {q:"12A Q18: Turbulence is often described as:",opts:["Random and stochastic, though governed by deterministic Navier–Stokes","Purely random noise with no governing equations","Purely laminar","Inviscid"],ans:0},
+  {q:"12A Q19: Integral length scale in turbulence corresponds to:",opts:["Smallest dissipative scale","Largest energy-containing eddies","Boundary layer thickness","Wall units"],ans:1},
+  {q:"12A Q20: Taylor microscale lies:",opts:["Between integral and Kolmogorov scales","Below Kolmogorov","Above integral","Equal to boundary layer thickness"],ans:0},
+  {q:"12A Q21: Turbulent flows tend to:",opts:["Stabilise small perturbations","Amplify and distort perturbations","Eliminate any perturbations","Remain uniform"],ans:1},
+  {q:"12A Q22: In RANS, the mean of fluctuations u' is:",opts:["Zero by definition","Non-zero","Undefined","Always negative"],ans:0},
+  {q:"12A Q23: Reynolds stresses represent:",opts:["Molecular stresses","Additional apparent stresses due to velocity fluctuations","Pressure stresses only","No physical meaning"],ans:1},
+  {q:"12A Q24: Turbulent diffusion is generally:",opts:["Smaller than molecular diffusion","Much larger than molecular diffusion","Zero","Unrelated to flow"],ans:1},
+  {q:"12A Q25: Turbulent flows are more common in engineering systems because:",opts:["Reynolds numbers are high","Reynolds numbers are low","Mach numbers are small","Fluids are incompressible"],ans:0},
+  {q:"12A Q26: Direct simulation of all turbulence scales in realistic 3D flow is called:",opts:["RANS","LES","DNS","PANS"],ans:2},
+  {q:"12A Q27: DNS computational cost increases strongly with:",opts:["Decreasing Re","Increasing Re and domain size","Using steady flows","Using laminar models"],ans:1},
+  {q:"12A Q28: Large-Eddy Simulation (LES) resolves:",opts:["All scales","Only small scales","Large eddies, models small scales","No scales"],ans:2},
+  {q:"12A Q29: In LES, subgrid-scale models represent:",opts:["Resolved scales","Unresolved smaller eddies","Boundary layers","Laminar regions"],ans:1},
+  {q:"12A Q30: RANS models solve for:",opts:["Instantaneous fields","Mean fields only","Only laminar fields","Only solid temperatures"],ans:1},
+  {q:"12A Q31: Turbulent kinetic energy production term in RANS k-equation is driven by:",opts:["Mean shear","Buoyancy only","Radiation","Chemical reactions"],ans:0},
+  {q:"12A Q32: Dissipation ε is always:",opts:["Positive or zero","Negative","Zero","Complex"],ans:0},
+  {q:"12A Q33: The turbulence time scale is often approximated as:",opts:["ε/k","k/ε","√k","1/ε"],ans:1},
+  {q:"12A Q34: In homogeneous isotropic turbulence, statistics are:",opts:["Independent of direction","Highly anisotropic","Dependent on location only","Undefined"],ans:0},
+  {q:"12A Q35: For practical RANS modelling, turbulence is usually assumed to be:",opts:["Anisotropic at all scales","Isotropic at small scales","Isotropic at large scales only","Exactly laminar"],ans:1},
+  {q:"12A Q36: Turbulence enhances:",opts:["Only viscous forces","Transport of momentum, heat, and species","Only pressure","Only density"],ans:1},
+  {q:"12A Q37: In wall-bounded turbulence, near-wall region can be divided into:",opts:["Core only","Viscous sublayer, buffer layer, log layer","Only viscous layer","Only log layer"],ans:1},
+  {q:"12A Q38: The friction velocity u_τ is defined from:",opts:["Density only","Wall shear stress τ_w and density","Temperature","Pressure"],ans:1},
+  {q:"12A Q39: Dimensionless wall distance y+ = y u_τ / ν is used to:",opts:["Scale pressure","Locate position within boundary layer","Set Mach number","Set Reynolds number"],ans:1},
+  {q:"12A Q40: Turbulence causes the mean velocity profile near walls to:",opts:["Remain linear throughout","Follow log-law in a certain region","Be uniform","Be parabolic"],ans:1},
+  {q:"12A Q41: The main aim of turbulence models is to:",opts:["Resolve all scales exactly","Represent effects of turbulent fluctuations on mean flow without resolving all scales","Ignore turbulence","Stabilise laminar flow"],ans:1},
+  {q:"12A Q42: RANS filtering can be:",opts:["Time averaging","Ensemble averaging","Spatial averaging","All of these depending on context"],ans:3},
+  {q:"12A Q43: Turbulent flows have energy input at:",opts:["Small scales","Large scales","All scales equally","No scales"],ans:1},
+  {q:"12A Q44: Turbulence anisotropy is important especially in:",opts:["Simple shear flows only","Flows with curvature, rotation, separation","Pure conduction","No-flow regimes"],ans:1},
+  {q:"12A Q45: Reynolds stress anisotropy cannot be captured by:",opts:["Nonlinear eddy-viscosity or RSM models","Simple linear eddy-viscosity models as well","RSM models","DNS"],ans:1},
+  {q:"12A Q46: Turbulence modelling is needed because:",opts:["DNS is too cheap","DNS is too expensive for most engineering flows","LES is always exact","Laminar equations impossible"],ans:1},
+  {q:"12A Q47: High Reynolds numbers imply:",opts:["Thin viscous layers and broad range of turbulent scales","Thick viscous layers and no turbulence","No boundary layers","Only laminar flow"],ans:0},
+  {q:"12A Q48: Turbulence intensity is defined roughly as:",opts:["U'/U mean","(u'^2 + v'^2 + w'^2)^0.5","k","ε"],ans:1},
+  {q:"12A Q49: In many external flows, turbulence intensity in free stream is:",opts:["0–1%","20–30%","50–60%","100%"],ans:0},
+  {q:"12A Q50: Overall, turbulence is:",opts:["Purely destructive","Both beneficial (mixing) and detrimental (drag) depending on context","Never useful","Always laminar"],ans:1},
+
+  // ===================== 12B – Turbulence Modelling (50) =====================
+  {q:"12B Q1: The Boussinesq hypothesis assumes that Reynolds stresses are proportional to:",opts:["Pressure gradient","Mean strain rate via an eddy viscosity","Density gradient","Temperature gradient"],ans:1},
+  {q:"12B Q2: The eddy viscosity μ_t has units of:",opts:["Pa·s","m²/s","kg/m³","K"],ans:1},
+  {q:"12B Q3: In RANS, turbulent viscosity is usually:",opts:["Much smaller than molecular viscosity","Of the same order or much larger than molecular viscosity","Always zero","Purely imaginary"],ans:1},
+  {q:"12B Q4: The standard k–ε model solves transport equations for:",opts:["k and ω","k and ε","u and v","T and p"],ans:1},
+  {q:"12B Q5: In k–ε, turbulent viscosity is often modelled as:",opts:["μ_t = ρk","μ_t = μ","μ_t = Cμ ρ k²/ε","μ_t = p/ρ"],ans:2},
+  {q:"12B Q6: A major limitation of standard k–ε is:",opts:["Good free-shear predictions","Poor near-wall behaviour and separation prediction","Too cheap","Exact DNS"],ans:1},
+  {q:"12B Q7: The k–ω model solves transport equations for:",opts:["k and ε","k and ω","ε and ω","u and v"],ans:1},
+  {q:"12B Q8: k–ω model is known for:",opts:["Good far-field behaviour","Good near-wall resolution and adverse pressure gradient performance","No sensitivity issues","No need for wall treatment"],ans:1},
+  {q:"12B Q9: k–ω is sensitive to:",opts:["Free-stream values of ω","Density only","Temperature only","Pressure only"],ans:0},
+  {q:"12B Q10: SST k–ω model blends:",opts:["Laminar and turbulent models","k–ω near wall and k–ε away from wall","RANS and DNS","LES and DNS"],ans:1},
+  {q:"12B Q11: SST is designed to:",opts:["Handle only laminar flows","Improve performance in wall-bounded flows and separated flows","Ignore separation","Replace all RANS"],ans:1},
+  {q:"12B Q12: Reynolds Stress Models (RSM / RST) solve:",opts:["One equation for μ_t","Two equations for k and ε","Transport equations for each Reynolds stress component","Only energy equation"],ans:2},
+  {q:"12B Q13: Advantage of RSM compared to k–ε is:",opts:["Less computational cost","Better ability to capture turbulence anisotropy and complex strain","Exact DNS","No closure problem"],ans:1},
+  {q:"12B Q14: RSM is:",opts:["Cheaper than k–ε","More expensive than k–ε","Same cost","Cost-free"],ans:1},
+  {q:"12B Q15: LES differs from RANS by:",opts:["Solving mean equations only","Resolving large scales in time and space, modelling small scales","Ignoring turbulence","Solving only laminar equations"],ans:1},
+  {q:"12B Q16: Wall functions are used to:",opts:["Resolve viscous sublayer directly with fine mesh","Model near-wall region, allowing coarser mesh","Remove turbulence","Replace BCs"],ans:1},
+  {q:"12B Q17: Standard wall functions typically require y+:",opts:["< 1","≈ 30–300","≈ 0.1","> 1000"],ans:1},
+  {q:"12B Q18: Low-Re turbulence models without wall functions require y+:",opts:["≈ 30","≈ 300","≈ 1 or less","No constraint"],ans:2},
+  {q:"12B Q19: The turbulent Prandtl number Pr_t relates:",opts:["Turbulent viscosity and turbulent thermal diffusivity","Molecular viscosity and density","Pressure and temperature","Velocity and density"],ans:0},
+  {q:"12B Q20: In many RANS heat-transfer models, Pr_t is:",opts:["Highly variable and solved for","Assumed constant (e.g. ~0.85–0.9)","Zero","Infinite"],ans:1},
+  {q:"12B Q21: Mixing-length models define turbulent viscosity using:",opts:["Constant μ_t","Mixing length and local velocity gradient","DNS data directly","LES spectrum"],ans:1},
+  {q:"12B Q22: A mixing length near a flat wall often scales with:",opts:["Temperature","Distance from the wall","Pressure","Mach number"],ans:1},
+  {q:"12B Q23: Realisable k–ε models modify:",opts:["k-equation only","ε-equation and Cμ relation to enforce realisable Reynolds stresses","Continuity","Energy"],ans:1},
+  {q:"12B Q24: Realisable k–ε improves predictions of:",opts:["Laminar flows","Separation, streamline curvature, certain complex flows","Sound waves","Pure conduction"],ans:1},
+  {q:"12B Q25: Transition models aim to:",opts:["Model fully turbulent flow only","Predict laminar–turbulent transition process","Replace k–ε","Model DNS"],ans:1},
+  {q:"12B Q26: γ–Re_θ transition model uses:",opts:["Intermittency and transition onset criteria","Only ε","Only ω","Only k"],ans:0},
+  {q:"12B Q27: Turbulence models must recover:",opts:["Non-physical behaviour at low turbulence","Laminar behaviour as turbulence level → 0","Supersonic behaviour","No-flow behaviour"],ans:1},
+  {q:"12B Q28: For strongly swirling or rotating flows, which model is often better?",opts:["Standard k–ε","Standard k–ω","RSM (Reynolds stress model)","No turbulence model"],ans:2},
+  {q:"12B Q29: LES usually requires:",opts:["Coarse mesh near walls","Very fine mesh near walls or wall-models","No grid","Only 1D grid"],ans:1},
+  {q:"12B Q30: In RANS, turbulent viscosity μ_t depends typically on:",opts:["Only density","k and a time/length scale (e.g. ε or ω)","Only temperature","Only pressure"],ans:1},
+  {q:"12B Q31: Subgrid-scale (SGS) models in LES are used to:",opts:["Resolve large eddies","Model dissipative effect of unresolved scales","Replace wall functions","Model radiation"],ans:1},
+  {q:"12B Q32: Most turbulence models include empirical constants that are:",opts:["Random","Fitted to experimental and DNS data","Arbitrary","Purely theoretical"],ans:1},
+  {q:"12B Q33: Nonlinear eddy-viscosity models aim to:",opts:["Capture turbulence anisotropy better than linear models","Remove anisotropy","Remove Reynolds stresses","Eliminate diffusion"],ans:0},
+  {q:"12B Q34: Second-moment closure models (RSM) directly evolve:",opts:["Mean velocity only","Each Reynolds stress component","Total pressure","Temperature"],ans:1},
+  {q:"12B Q35: Computational ranking for given accuracy (cheapest to most expensive) is roughly:",opts:["DNS < LES < RANS","RANS < LES < DNS","LES < RANS < DNS","RANS < DNS < LES"],ans:1},
+  {q:"12B Q36: For general industrial external aerodynamics, a good default model is often:",opts:["Standard k–ε","SST k–ω","DNS","LES"],ans:1},
+  {q:"12B Q37: Turbulence models affect:",opts:["Only numerical stability","Predicted drag, lift, separation behaviour","Only temperature","Only density"],ans:1},
+  {q:"12B Q38: Over-reliance on turbulence models without validation can lead to:",opts:["Exact predictions","Misleading results even if solver converges","Guaranteed accuracy","No effect"],ans:1},
+  {q:"12B Q39: y+ is a:",opts:["Global mesh measure","Local dimensionless wall distance","Humidity ratio","Mach number"],ans:1},
+  {q:"12B Q40: In wall-function approaches, y+ too low often causes:",opts:["More accuracy","Violation of assumptions and poorer results","No effect","DNS-level accuracy"],ans:1},
+  {q:"12B Q41: In low-Re modelling, y+ too high means:",opts:["Viscous sublayer not resolved properly","Everything fine","Wall functions work","No need for turbulence"],ans:0},
+  {q:"12B Q42: Turbulent Schmidt number Sc_t is analogous to:",opts:["Prandtl number for heat","Reynolds number","Mach number","Froude number"],ans:0},
+  {q:"12B Q43: Turbulent scalar flux (e.g. species) is modelled via:",opts:["Molecular conduction only","Gradient diffusion hypothesis with eddy diffusivity","No flux","Wall functions only"],ans:1},
+  {q:"12B Q44: Choice of turbulence model should be based on:",opts:["Availability only","Flow type, geometry, separation, near-wall needs, and experience","Random selection","Computation time only"],ans:1},
+  {q:"12B Q45: For attached boundary layers and mild separation, which is often acceptable?",opts:["Standard k–ε","Any DNS","No turbulence model","Laminar assumption"],ans:0},
+  {q:"12B Q46: For strong adverse pressure gradients and separation, which is usually better?",opts:["Standard k–ε","SST k–ω or RSM","No model","Laminar"],ans:1},
+  {q:"12B Q47: For heat-transfer with turbulence, you must ensure:",opts:["Only continuity solved","Correct turbulent Prandtl number and turbulence model for flow","No energy equation","No BCs"],ans:1},
+  {q:"12B Q48: Turbulence models do not remove the need for:",opts:["Mesh generation","BC specification","Validation against experiments","All of these"],ans:3},
+  {q:"12B Q49: LES can behave like a RANS model if:",opts:["Grid is too coarse","Grid too fine","No BCs","DNS used"],ans:0},
+  {q:"12B Q50: Overall, turbulence modelling in CFD is best described as:",opts:["Exact representation of all turbulent scales","Use of physical and empirical closures to represent effects of unresolved turbulent motions on the mean flow","Ignoring turbulence","Purely numerical artefact"],ans:1}
+];
+
+function renderQuiz(){
+  const quiz=document.getElementById("quiz");
+  questions.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="question";
+
+    const q=document.createElement("div");
+    q.textContent = (idx+1) + ". " + item.q;
+    div.appendChild(q);
+
+    const opts=document.createElement("div");
+    opts.className="options";
+
+    item.opts.forEach((o,i)=>{
+      const id="q"+idx+"_"+i;
+      const label=document.createElement("label");
+      const input=document.createElement("input");
+      input.type="radio";
+      input.name="q"+idx;
+      input.id=id;
+      input.onclick=()=>{
+        // reset all labels for this question
+        const labels = opts.querySelectorAll("label");
+        labels.forEach(L => { L.className=""; L.textContent=L.textContent.replace(" ✓","").replace(" ✗",""); });
+        if(i===item.ans){
+          label.className="correct";
+          label.textContent=o+" ✓";
+        } else {
+          label.className="incorrect";
+          label.textContent=o+" ✗";
+        }
+      };
+      label.setAttribute("for",id);
+      label.textContent=o;
+      opts.appendChild(input);
+      opts.appendChild(label);
+    });
+
+    div.appendChild(opts);
+    quiz.appendChild(div);
+  });
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
