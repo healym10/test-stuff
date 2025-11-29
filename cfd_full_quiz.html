@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>CFD Exam Practice – Full 300 MCQ</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+.question { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+.options label { display: block; margin-left: 10px; }
+.correct { color: green; font-weight: bold; }
+.incorrect { color: red; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>CFD Exam Practice – Full MCQ Bank</h1>
+<p>Select an answer for each question.</p>
+<div id="quiz"></div>
+<script>
+const questions = [
+  // *** FULL 300+ QUESTIONS WILL BE INSERTED HERE ***
+  // Placeholder sample:
+  {q:"Sample Q: FVM is conservative by construction.", opts:["True","False"], ans:0}
+];
+
+function renderQuiz(){
+  const quiz=document.getElementById("quiz");
+  questions.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="question";
+    const q=document.createElement("div");
+    q.textContent=item.q;
+    div.appendChild(q);
+    const opts=document.createElement("div");
+    opts.className="options";
+    item.opts.forEach((o,i)=>{
+      const id="q"+idx+"_"+i;
+      const label=document.createElement("label");
+      const input=document.createElement("input");
+      input.type="radio";
+      input.name="q"+idx;
+      input.id=id;
+      input.onclick=()=>{
+        if(i===item.ans){ label.className="correct"; label.textContent=o+" ✓"; }
+        else{ label.className="incorrect"; label.textContent=o+" ✗"; }
+      };
+      label.setAttribute("for",id);
+      label.textContent=o;
+      opts.appendChild(input);
+      opts.appendChild(label);
+    });
+    div.appendChild(opts);
+    quiz.appendChild(div);
+  });
+}
+renderQuiz();
+</script>
+</body>
+</html>
